@@ -5,13 +5,12 @@ from fastapi import FastAPI, Request, Response, HTTPException, Query
 from fastapi.responses import JSONResponse
 from wuggy.generators.wuggygenerator import WuggyGenerator
 from typing import Dict, Optional
-
+from fastapi.middleware.cors import CORSMiddleware
 # g = WuggyGenerator()
 # # TODO: create separate WuggyGenerators for each language with the plugins preloaded on server launch
 # g.load("orthographic_english")
 # for sequence in g.generate_simple("car"):
 #     print(sequence)
-
 
 environment = os.environ.get("ENV", "development")
 if environment == "production":
@@ -33,6 +32,13 @@ print(
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins="*",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.middleware("http")
 async def timeout_longstanding_requests(request: Request, call_next):
@@ -62,5 +68,4 @@ async def generate_simple(referenceSequence: Optional[str] = Query(..., max_leng
             pseudowords.append(sequence)
             if len(pseudowords) == 10:
                 break
-        print(pseudowords[0])
-        return pseudowords
+        return { "word": referenceSequence, "matches": pseudowords }
