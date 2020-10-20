@@ -1,0 +1,5 @@
+autopep8==1.5.4
+pycodestyle==2.6.0
+pylint==2.6.0
+uvicorn==0.12.2
+fastapi==0.61.1
