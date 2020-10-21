@@ -1,0 +1,39 @@
+#main-container > * {
+  margin: 15px 0;
+}
+button {
+  margin-left: 3% !important;
+  margin-right: 3% !important;
+}
+.MuiSnackbar-root {
+  display: block;
+  top: 2%;
+}
+@keyframes wuggy-animation {
+  0% {
+    left: 0px;
+  }
+  25% {
+    left: 100px;
+    transform: rotate(20deg);
+  }
+  50% {
+    left: 150px;
+    transform: rotate(-20deg);
+  }
+  75% {
+    left: 200px;
+    transform: rotate(20deg);
+  }
+  100% {
+    left: 300px;
+    transform: rotate(-20deg);
+  }
+}
+
+#wuggy-icon-animated {
+  position: relative;
+  background-color: red;
+  animation-name: wuggy-animation;
+  animation-duration: 10s;
+}
