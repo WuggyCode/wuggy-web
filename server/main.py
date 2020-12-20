@@ -1,16 +1,12 @@
 import asyncio
-import time
 import os
-from fastapi import FastAPI, Request, Response, HTTPException, Query
-from fastapi.responses import JSONResponse
-from wuggy.generators.wuggygenerator import WuggyGenerator
+import time
 from typing import Dict, Optional
+
+from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-# g = WuggyGenerator()
-# # TODO: create separate WuggyGenerators for each language with the plugins preloaded on server launch
-# g.load("orthographic_english")
-# for sequence in g.generate_simple("car"):
-#     print(sequence)
+from fastapi.responses import JSONResponse
+from wuggy import WuggyGenerator
 
 environment = os.environ.get("ENV", "development")
 if environment == "production":
@@ -19,6 +15,9 @@ if environment == "production":
 else:
     print("Wuggy Server is set to development mode. Only a subset of language plugins will be loaded.")
     language_plugins_to_load = ["orthographic_english"]
+    # Uncomment if your language plugin is missing
+    # wuggy_downloader = WuggyGenerator()
+    # wuggy_downloader.download_language_plugin("orthographic_english", True)
 
 wuggy_generators: Dict[str, WuggyGenerator] = {}
 for language_plugin_name in language_plugins_to_load:
@@ -58,14 +57,13 @@ async def timeout_longstanding_requests(request: Request, call_next):
 @app.get("/generate")
 async def generate_simple(referenceSequence: Optional[str] = Query(..., max_length=50), languagePlugin: Optional[str] = Query("orthographic_english", max_length=50)):
     """
-    Example query:
+    Example query: ?referenceSequence=trumpet
     """
-    await asyncio.sleep(5)
     if languagePlugin in wuggy_generators:
         wuggy_generator = wuggy_generators[languagePlugin]
         pseudowords = []
-        for sequence in wuggy_generator.generate_simple(referenceSequence):
-            pseudowords.append(sequence)
+        for sequence in wuggy_generator.generate_classic([referenceSequence]):
+            pseudowords.append(sequence["pseudoword"])
             if len(pseudowords) == 10:
                 break
         return { "word": referenceSequence, "matches": pseudowords }

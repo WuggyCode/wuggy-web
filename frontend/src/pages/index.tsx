@@ -2,6 +2,7 @@ import {Container, Typography} from "@material-ui/core";
 import * as React from "react";
 import PseudowordTable from "../components/PseudowordTable";
 import WuggyInput from "../components/WuggyInput";
+import { PseudowordMatches } from "../models/PseudowordMatches";
 export default class Root extends React.Component<
   unknown,
   {pseudowordMatches: PseudowordMatches; pendingGeneration: boolean}
